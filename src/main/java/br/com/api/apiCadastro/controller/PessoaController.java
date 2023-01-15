@@ -19,7 +19,7 @@ import java.util.Optional;
 @Api(value="API REST Pessoas")
 public class PessoaController {
 
-    private PessoaService pessoaService;
+    private final PessoaService pessoaService;
 
 
     public PessoaController(PessoaService pessoaService) {
@@ -49,15 +49,12 @@ public class PessoaController {
     @ApiOperation(value = "Retorna uma pessoa")
     public  ResponseEntity<PessoaResponseDTO> buscarPorId(@PathVariable Long id){
         Optional<Pessoa> pessoa = pessoaService.findById(id);
-        if(pessoa.isPresent()){
-            return ResponseEntity.ok(new PessoaResponseDTO(pessoa.get()));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return pessoa.map(value -> ResponseEntity.ok(new PessoaResponseDTO(value))).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PutMapping("pessoas/{id}")
     @ApiOperation(value = "Atualiza uma pessoa")
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody PessoaRequestDTO pessoa) {
+    public ResponseEntity<PessoaResponseDTO> atualizar(@PathVariable Long id, @RequestBody PessoaRequestDTO pessoa) {
         try {
             return ResponseEntity.ok().body(new PessoaResponseDTO(pessoaService.update(id, pessoa)));
         }catch (Exception ex) {
