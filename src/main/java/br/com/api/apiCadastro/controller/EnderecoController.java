@@ -1,0 +1,31 @@
+package br.com.api.apiCadastro.controller;
+
+import br.com.api.apiCadastro.model.Endereco;
+import br.com.api.apiCadastro.service.EnderecoService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/enderecos")
+public class EnderecoController {
+
+    private EnderecoService enderecoService;
+
+
+    public EnderecoController(EnderecoService enderecoService) {
+        this.enderecoService = enderecoService;
+    }
+
+    @GetMapping("/pessoas/{id}")
+    public ResponseEntity ListarEnderecoPessoa(@PathVariable Long id){
+        List<Endereco> enderecos = enderecoService.listByPessoa(id);
+        return ResponseEntity.ok().body(enderecos);
+    }
+
+
+}
